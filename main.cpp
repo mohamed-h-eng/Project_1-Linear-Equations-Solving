@@ -68,7 +68,7 @@ int main(){
     }
     // display const value after = sign
     for(int i =0;i<n;i++){
-        cout << matrix_const[i]-2 << " ";
+        cout << matrix_const[i] << " ";
     }
 
 
