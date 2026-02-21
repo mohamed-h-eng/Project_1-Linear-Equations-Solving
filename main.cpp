@@ -14,8 +14,13 @@ int main(){
     string equation;
     int n;
     cin >> n;
-    int matrix[3][3];
-    int matrix_const[3];
+    // int matrix[3][3];
+    // int matrix_const[3];
+    int** matrix = new int*[n];
+    for (int i = 0; i < n; i++) {
+        matrix[i] = new int[n];
+    }
+    int* matrix_const = new int[n];
     int arr_index = 0;
     string temp= "";
     for(int i =0; i<n;i++){
@@ -42,7 +47,7 @@ int main(){
             }
         }
         temp;
-        int arr[3];
+        int* arr = new int[n];
         
         // extract numbers and store in 2d array
         // each equation extracted into array
@@ -60,8 +65,8 @@ int main(){
         }
         // display 2d array(matrix)
         cout << "\nextract numbers\n";
-        for (int i = 0; i < 3; i++) {
-            for(int k =0; k<3;k++){
+        for (int i = 0; i < n; i++) {
+            for(int k =0; k<n;k++){
                 cout << matrix[i][k] << " ";
             }
             cout << endl;
