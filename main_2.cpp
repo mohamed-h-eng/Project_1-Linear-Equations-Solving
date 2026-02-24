@@ -9,18 +9,54 @@
 # include <string>
 using namespace std;
 
+int cramer_solve(int matrix_ext) {
+    int sum = 0;
+    int subtract = 0;
+    int multiply = 1;
+
+    // --- Get positive multiplications ---
+    // for(int i = 0; i < 3; i++) {
+    //     multiply = 1; 
+    //     for(int k = 0; k < 3; k++) {
+    //         cout << matrix_ext[k][k + i] << " ";
+    //         multiply *= matrix_ext[k][k + i];
+    //     }
+    //     sum += multiply;
+        
+    //     cout << endl << endl;
+    // }
+    // cout << endl;
+
+    // // --- Get negative multiplications ---
+    // for(int i = 4; i > 1; i--) {
+    //     multiply = 1; 
+    //     for(int k = 0; k < 3; k++) {
+    //         multiply *= matrix_ext[k][i - k];
+    //     }
+    //     subtract -= multiply; 
+    // }
+
+    return sum + subtract;
+}
+
 int main(){
-    string input;
-    string equation;
-    int n;
-    cin >> n;
-    int matrix[3][3];
-    int matrix_const[3];
+    // initializing variables
+    string equation; // temp variable to store input equation
+    int n; // number of equations user want to enter
+    cin >> n; // get input from user
+    // create an empty 2D matrix to store equations cooffecients
+    int** matrix = new int*[n];
+    for (int i = 0; i < n; i++) {
+        matrix[i] = new int[n];
+    }
+    // store equations constant at the right-side (after = sign)
+    int* matrix_const = new int[n];
+    
     int arr_index = 0;
     string temp= "";
+    
     for(int i =0; i<n;i++){
-        cin >> equation;
-        
+        cin >> equation;    
         // save const value after = sign from every equation in matrix_const
         for(int s =0;s<equation.length();s++){
             if(equation[s] == '='){
@@ -60,8 +96,8 @@ int main(){
         }
         // display 2d array(matrix)
         cout << "\nextract numbers\n";
-        for (int i = 0; i < 3; i++) {
-            for(int k =0; k<3;k++){
+        for (int i = 0; i < n; i++) {
+            for(int k =0; k<n;k++){
                 cout << matrix[i][k] << " ";
             }
             cout << endl;
@@ -74,7 +110,7 @@ int main(){
     // extend the matrix with (( n - 1 ) * 2 ) + 1
     // int ext = ((n - 1) * 2) + 1;
     // int matrix_ext[n][ext];
-    int matrix_ext[3][5]={0}; // test case (use static array) update with(dynamic array)
+    int matrix_ext[n][(((n-1)*2)+1)]={0}; // test case (use static array) update with(dynamic array)
     //for on the 3 equations
     cout << "\n"; // display
     for(int i=0;i<n;i++){
@@ -98,23 +134,31 @@ int main(){
     }
     
     // this a test case
-    for(int i =0;i<6;i++){
-        cout << i << "repeat\n";
-        for(int k=0;k<3;k++){
-            cout << "m[" << i << "]" << "["  << k << "] , ";
-        }
-        cout <<"\n";
-    }
+    // for(int i =0;i<6;i++){
+    //     cout << i << "repeat\n";
+    //     for(int k=0;k<3;k++){
+    //         cout << "m[" << i << "]" << "["  << k << "] , ";
+    //     }
+    //     cout <<"\n";
+    // }
 
+    // cout << "\ncramer: " << cramer_solve(matrix_ext)<< endl;
     // get positive multiplications
     int zero = 0;
     int first_res =1;
+    
+    int multiply = 1;
+    int sum = 0;
+    
     for(int i =0;i<3;i++){
         for(int k=0;k<3;k++){
             first_res*=matrix_ext[zero][k+i];
             cout << matrix_ext[zero][k+i] << " ";
+            multiply *=matrix_ext[zero][k+i];
             zero ++;
         }
+        sum += multiply;
+        multiply =1;
         zero = 0;
 
         cout << endl;
@@ -124,18 +168,56 @@ int main(){
     // get negative multiplications
     zero = 0;
     int second_res =0;
+    int subtract = 0;
     for(int i =4;i>1;i--){
         for(int k=0;k<3;k++){
-            cout << matrix_ext[k][i-k] << " ";
+            multiply*= matrix_ext[k][i-k];
         }
+        subtract -= multiply;
+        multiply=1;
+    }
+    
+    // get D_value
+    int d_value = subtract + sum;
+    cout << "\nD_value: " << d_value;
+    
+    // move the constant through all columns to get D_x1, D_x2 and so
+    for(int i=0;i<n;i++){
+        matrix_ext[i][0] = matrix_const[i];
+    }
+    
+    zero = 0;
+    multiply=1;
+    sum = 0;
+    subtract = 0;
+    // 2# get positive multiplications
+    for(int i =0;i<3;i++){
+        for(int k=0;k<3;k++){
+            first_res*=matrix_ext[zero][k+i];
+            multiply *=matrix_ext[zero][k+i];
+            zero ++;
+        }
+        sum += multiply;
+        multiply =1;
         zero = 0;
+    }
+    cout << endl;
+    // get negative multiplications
+    zero = 0;
+    multiply=1;
 
-        cout << endl;
-        cout << endl;
+    for(int i =4;i>1;i--){
+        for(int k=0;k<3;k++){
+            multiply*= matrix_ext[k][i-k];
+        }
+        subtract -= multiply;
+        multiply=1;
     }
 
-    // solve the equations
-    // loop through matrix_ext to get D_value
+    // calculate D_x1
+    cout << "\nD_x1: " << subtract + sum;
+    cout << "\nx1= " << (subtract + sum)/d_value;
+
 
     /*
     in this part we need to calculate d_value , d_x1, d_x2, d_x3
