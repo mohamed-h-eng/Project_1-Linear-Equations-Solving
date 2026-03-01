@@ -77,7 +77,7 @@ The determinant = positive diagonals sum + negative diagonals sum.
 
 **Output:**
 ```
-x1= 1
+x1= 3
 x2= 2
 x3= 1
 ```

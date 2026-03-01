@@ -63,9 +63,9 @@ void extend_matrix(int ** matrix, int ** matrix_ext, int *num_vars){
     }
 }
 
-void get_d_x(int ** matrix_ext,int **matrix, int * matrix_const, int *num_vars, int index){
+void get_d_x(int ** matrix_ext,int **matrix, int * matrix_const, int *num_vars, int *index){
     for(int i =0;i<*num_vars;i++){
-        matrix_ext[i][index] = matrix_const[i];
+        matrix_ext[i][*index] = matrix_const[i];
         for(int s=0; s<*num_vars-1;s++){
             matrix_ext[i][s+*num_vars] = matrix_ext[i][s];
         }
@@ -95,6 +95,52 @@ void get_negative_multiply(int **matrix_ext, int* result, int *num_vars) {
     }
 }
 
+string get_equation(string *command, string *equations){
+    int temp_int = 0;
+    string temp_str = "";
+    for(int i=0;i<command->length();i++){
+        if((*command)[i] == 'n'){
+            for(int k=i+2;k<command->length();k++){
+                temp_str += (*command)[k];
+            }
+        }
+    }
+    temp_int = atof(temp_str.c_str())-1;
+    return equations[temp_int];
+}
+
+void solve(int *num_vars,int **matrix,int **matrix_ext,int *matrix_const, int * result, int *D_value, int *i){
+    extend_matrix(matrix, matrix_ext, num_vars);
+    get_d_x(matrix_ext,matrix,matrix_const,num_vars,i);
+    get_negative_multiply(matrix_ext,result,num_vars);
+    get_positive_multiply(matrix_ext,result,num_vars);
+}
+void show_matrix(int **matrix, int*num_vars){
+    for (int i = 0; i < *num_vars; i++) {
+        for(int k =0; k<*num_vars;k++){
+            cout << matrix[i][k] << " ";
+        }
+        cout << endl;
+    }
+}
+void show_d_x(int **matrix,int **matrix_ext,int *matrix_const, int*num_vars, int * index){
+    // extend_matrix(matrix, matrix_ext,num_vars);
+    get_d_x(matrix_ext,matrix,matrix_const,num_vars,index);
+    show_matrix(matrix,num_vars);
+}
+int parse_command(string *command,string stop){
+    int temp_int = 0;
+    string temp_str = "";
+    for(int i=0;i<command->length();i++){
+        if((*command)[i] == 'n'){
+            for(int k=i+2;k<command->length();k++){
+                temp_str += (*command)[k];
+            }
+        }
+    }
+    temp_int = atof(temp_str.c_str())-1;
+    return temp_int;
+}
 int main(){
     string equation;
     string temp_string = "";
@@ -102,6 +148,8 @@ int main(){
     int result = 0;
     int D_value =0;
     cin >> num_vars;
+    cin.ignore();
+    string* equations = new string[num_vars];
     int** matrix = new int*[num_vars];
     for (int i = 0; i < num_vars; i++) {
         matrix[i] = new int[num_vars];
@@ -114,7 +162,8 @@ int main(){
     
     //parsing the equations
     for(int i =0; i<num_vars;i++){
-        cin >> equation;   
+        cin >> equation;
+        equations[i]   = equation;
         parse_equation(&equation, &temp_string,matrix,matrix_const, &i);
         equation = "";
         temp_string = "";
@@ -123,13 +172,53 @@ int main(){
     get_negative_multiply(matrix_ext,&result,&num_vars);
     get_positive_multiply(matrix_ext,&result,&num_vars);
     D_value = result;
-    for(int i=0;i< num_vars;i++){
-        result = 0;
-        extend_matrix(matrix, matrix_ext, &num_vars);
-        get_d_x(matrix_ext,matrix,matrix_const,&num_vars,i);
-        get_negative_multiply(matrix_ext,&result,&num_vars);
-        get_positive_multiply(matrix_ext,&result,&num_vars);
-        cout << "x" << i+1 << "= " << result / D_value << endl;
-        result = 0;
+    // [DONE] num_vars
+    // [DONE] equation i
+    // column x2   coofficients for x2 in all equations
+    // add 1 3
+    // subtract 1 3
+    // [DONE] D matrix of coofficients
+    // D x1 matrix of coofficients
+    // [DONE] D_value
+    // [DONE] solve prints x1,x2,x3 values
+    string command;
+    // string temp_str="";
+    int temp_int=0;
+    while (true){
+        getline(cin, command);
+        if (command.empty()) continue;
+        if(command == "num_vars"){
+            cout << num_vars << endl;
+        }else if(command[0] == 'e'){
+            temp_int = parse_command(&command," ");
+            cout << equations[temp_int] << endl;
+            // cout << get_equation(&command,equations) << endl;
+        }else if(command[0] == 'c'){
+            cout << "column x2" << endl;
+        }else if(command[0] == 'D' && command[2] =='x'){
+            temp_int = parse_command(&command,"x");
+            show_d_x(matrix,matrix_ext,matrix_const,&num_vars,&temp_int);
+            continue;
+        }else if(command == "D"){
+            show_matrix(matrix,&num_vars);
+            cout << endl;
+        }else if(command == "D_value"){
+            cout << D_value << endl;
+        }else if(command == "solve"){
+            for(int i=0;i< num_vars;i++){
+                solve(&num_vars,matrix,matrix_ext,matrix_const,&result,&D_value,&i);
+                cout << "x" << i+1 << "=" << result/D_value << endl;
+            }
+        }else if(command == "exit"){
+            cout << "end program" << endl;
+            break;
+        }else{
+            cout << "else\n";
+            continue;
+        }
+        command = "";
+        // temp_str="";
+        // temp_int=0;
     }
+    return 0;
 }
