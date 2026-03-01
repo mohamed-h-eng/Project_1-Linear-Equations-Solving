@@ -1,6 +1,5 @@
 # include <iostream>
 # include <string>
-#include <cmath> 
 using namespace std;
 
 void get_left_side(const string *input, string *temp_string) {
