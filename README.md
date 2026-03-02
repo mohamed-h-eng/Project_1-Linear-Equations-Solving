@@ -54,10 +54,10 @@ Input:  num_vars
 Output: 3
 ```
 
-#### `equation n i`
+#### `equation ni`
 Prints the equation at position `i` (1-based index) in its stored form.
 ```
-Input:  equation n 2
+Input:  equation n2
 Output: 1x1+2x2+1x3=8
 ```
 
@@ -88,7 +88,6 @@ Subtracts equation `j` from equation `i` and prints the resulting equation.
 Input:  subtract 3 1
 Output: 2x1-1x2+1x3+x4=5
 ```
-> ❌ Not yet implemented.
 
 #### `substitute xk i j`
 Removes variable `xk` from equation `i` by substituting equation `j` in its place, then prints the result.
