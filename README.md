@@ -26,10 +26,6 @@ The program reads from **standard input** (no prompts).
 2x1+3x2+4x3=16
 1x1+2x2+1x3=8
 3x1+1x2+2x3=13
-num_vars
-D_value
-solve
-exit
 ```
 
 ### Equation Format Rules
