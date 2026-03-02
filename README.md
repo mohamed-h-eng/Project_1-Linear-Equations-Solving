@@ -60,7 +60,6 @@ Prints the equation at position `i` (1-based index) in its stored form.
 Input:  equation n 2
 Output: 1x1+2x2+1x3=8
 ```
-> ⚠️ Currently prints the index number instead of the equation string — not yet fully implemented.
 
 #### `column xi`
 Prints the coefficient of variable `xi` from each equation, one value per line.
@@ -71,7 +70,6 @@ Output:
 2
 1
 ```
-> ❌ Not yet implemented — stub only.
 
 ---
 
@@ -83,7 +81,6 @@ Adds equation `i` and equation `j` together and prints the resulting equation.
 Input:  add 1 3
 Output: 4x1+4x2+6x3+x4=29
 ```
-> ❌ Not yet implemented.
 
 #### `subtract i j`
 Subtracts equation `j` from equation `i` and prints the resulting equation.
@@ -99,7 +96,6 @@ Removes variable `xk` from equation `i` by substituting equation `j` in its plac
 Input:  substitute x2 1 3
 Output: <result equation with x2 eliminated>
 ```
-> ❌ Not yet implemented.
 
 ---
 
@@ -114,7 +110,6 @@ Output:
 1 2 1
 3 1 2
 ```
-> ⚠️ Works but also prints extra `"D matrix"` text — violates the no-extra-output rule.
 
 #### `D xi`
 Prints the Cramer matrix with the RHS constants substituted into the column of variable `xi`.
@@ -125,7 +120,6 @@ Output:
 1 8  1
 3 13 2
 ```
-> ❌ `show_d_x` is commented out — not yet functional.
 
 #### `D_value`
 Prints the determinant of the coefficient matrix.
@@ -133,7 +127,6 @@ Prints the determinant of the coefficient matrix.
 Input:  D_value
 Output: -11
 ```
-> ✅ Fully implemented.
 
 #### `solve`
 Computes and prints the value of each variable using Cramer's Rule. Prints `No Solution` if the determinant is 0.
@@ -144,7 +137,6 @@ x1=3
 x2=2
 x3=1
 ```
-> ⚠️ Partially implemented — `x1` is correct but subsequent variables are wrong because `result` is not reset between iterations.
 
 ---
 
@@ -156,7 +148,6 @@ Terminates the command loop and ends the program.
 Input:  exit
 Output: end program
 ```
-> ⚠️ Works, but the project spec requires `quit` — keyword mismatch.
 
 ---
 
@@ -252,8 +243,8 @@ The determinant = positive diagonals sum + negative diagonals sum.
 
 ## Credits
 
-| Name | ID | Email |
-|---|---|---|
+| Name | Email |
+|---|---|
 | Mohamed Hany Mohamed | mohamedhany1615@gmail.com |
 | Yahia Ahmed Mohamed | y.ahmed0112000@gmail.com |
 | Mohamed Khaled Farouq | itsmebazooka@gmail.com |
