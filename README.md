@@ -1,6 +1,6 @@
 # Linear Equations Solver
 
-A C++ program that solves a system of **n linear equations** with **n unknowns** using **Cramer's Rule** with the **Sarrus diagonal method** for computing determinants. After reading the equations, the program enters an interactive command loop until `exit` is entered.
+A C++ program that solves a system of **n linear equations** with **n unknowns** using **Gaussian Elimination**. After reading the equations, the program enters an interactive command loop until `exit` is entered.
 
 ---
 
@@ -44,7 +44,7 @@ After the equations are read, the program accepts the following commands:
 ### Level 1 — Basic Queries
 
 #### `num_vars`
-Prints the total number of distinct variables across all equations.
+Prints the total number of variables.
 ```
 Input:  num_vars
 Output: 3
@@ -71,30 +71,23 @@ Output:
 
 ### Level 2 — Equation Arithmetic
 
-#### `add i j`
-Adds equation `i` and equation `j` together and prints the resulting equation.
-```
-Input:  add 1 3
-Output: 4x1+4x2+6x3+x4=29
-```
-
 #### `subtract i j`
 Subtracts equation `j` from equation `i` and prints the resulting equation.
 ```
 Input:  subtract 3 1
-Output: 2x1-1x2+1x3+x4=5
+Output: 1x1-2x2-2x3=-3
 ```
 
 #### `substitute xk i j`
 Removes variable `xk` from equation `i` by substituting equation `j` in its place, then prints the result.
 ```
 Input:  substitute x2 1 3
-Output: <result equation with x2 eliminated>
+Output: -7x1-2x3=-23
 ```
 
 ---
 
-### Level 3 — Cramer's Rule
+### Level 3 — Matrix & Determinant
 
 #### `D`
 Prints the full n×n coefficient matrix, one row per line, values space-separated.
@@ -107,24 +100,24 @@ Output:
 ```
 
 #### `D xi`
-Prints the Cramer matrix with the RHS constants substituted into the column of variable `xi`.
+Prints the matrix with the RHS constants substituted into the column of variable `xi`.
 ```
 Input:  D x2
 Output:
 2 16 4
-1 8  1
+1  8 1
 3 13 2
 ```
 
 #### `D_value`
-Prints the determinant of the coefficient matrix.
+Prints the determinant of the coefficient matrix, computed via Gaussian elimination.
 ```
 Input:  D_value
 Output: -11
 ```
 
 #### `solve`
-Computes and prints the value of each variable using Cramer's Rule. Prints `No Solution` if the determinant is 0.
+Solves the system using Gaussian elimination with back-substitution and prints each variable. Prints `No solution` if the determinant is 0.
 ```
 Input:  solve
 Output:
@@ -180,23 +173,11 @@ Each equation string is split at `=` into a left-hand side and a right-hand side
 - **`get_right_side`** — extracts the RHS value and stores it in `matrix_const[]`
 - **`get_cooff`** — walks the LHS string, reads coefficients before each `x`, and stores them in the coefficient matrix `matrix[][]`
 
-### Step 2 — Cramer's Rule
+### Step 2 — Determinant via Gaussian Elimination
+`gaussian_det` makes a float working copy of the matrix and performs forward elimination with partial pivoting. The determinant is the product of the pivot values, with sign flipped for each row swap. Works correctly for any matrix size n×n.
 
-For a system `Ax = b`, Cramer's Rule gives:
-
-```
-xi = det(Ai) / det(A)
-```
-
-Where `Ai` is the matrix `A` with column `i` replaced by the constants vector `b`.
-
-### Step 3 — Determinant via Sarrus' Rule
-The matrix is extended by appending its first `n-1` columns to the right (`extend_matrix`). Then:
-
-- **`get_positive_multiply`** — sums the products along the main diagonals (top-left → bottom-right)
-- **`get_negative_multiply`** — subtracts the products along the anti-diagonals (top-right → bottom-left)
-
-The determinant = positive diagonals sum + negative diagonals sum.
+### Step 3 — Solving via Gaussian Elimination
+`solve` builds an augmented matrix `[A|b]` and performs the same forward elimination. It then back-substitutes from the last row upward to find each variable's value.
 
 ---
 
@@ -208,23 +189,25 @@ The determinant = positive diagonals sum + negative diagonals sum.
 | `get_right_side` | Extracts the RHS constant and stores it |
 | `get_cooff` | Parses coefficients from LHS into the matrix |
 | `parse_equation` | Calls the three functions above for one equation |
-| `extend_matrix` | Appends first 2 columns to matrix for Sarrus |
-| `get_d_x` | Replaces column `i` with constants for Cramer's Dx |
-| `get_positive_multiply` | Computes sum of positive Sarrus diagonals |
-| `get_negative_multiply` | Computes sum of negative Sarrus diagonals |
-| `get_equation` | Parses equation index from command string (unused) |
-| `parse_command` | Extracts integer argument from a command string |
-| `solve` | Runs Cramer's Rule for one variable |
+| `extend_matrix` | Copies matrix into matrix_ext for use by `show_d_x` |
+| `get_d_x` | Replaces column `i` with constants for the `D xi` command |
+| `gaussian_det` | Computes the determinant via Gaussian elimination |
+| `solve` | Solves the system via Gaussian elimination + back-substitution |
 | `show_matrix` | Prints the n×n matrix to stdout |
-| `show_d_x` | Prints the Cramer matrix for variable `i` |
-| `main` | Reads input, builds matrix, runs command loop |
+| `show_d_x` | Prints the substituted matrix for variable `i` |
+| `parse_command` | Extracts the value after the last occurrence of a stop character |
+| `parse_command_first` | Extracts the value between the first and second occurrence of a stop character |
+| `show_column_x` | Prints one column of the coefficient matrix |
+| `subtract` | Subtracts one equation from another and prints the result |
+| `substitute_variable` | Eliminates a variable from one equation using another and prints the result |
+| `main` | Reads input, builds matrix, computes determinant, runs command loop |
 
 ---
 
 ## Known Limitations
 
-- **Integer arithmetic only** — all coefficients and results are stored as `int`; fractional answers are truncated (e.g. `2.5` becomes `2`)
-- **Implicit coefficients not supported** — `x1` or `-x2` (without explicit `1`) will be parsed as coefficient `0`
+- **Integer coefficients only** — all coefficients and RHS constants are stored as `int`; fractional inputs will be truncated on read
+- **Implicit coefficients not supported** — `x1` or `-x2` without an explicit numeric coefficient (e.g. `1x1`) will be parsed as coefficient `0`
 - **Single-digit variable indices only** — works for `x1`–`x9`; `x10` and above will mis-parse
 
 ---
@@ -246,5 +229,5 @@ The determinant = positive diagonals sum + negative diagonals sum.
 | Shrouk Mohamed Sayed | shrouk26529@gmail.com |
 | Hanem Atef Elsayed | hanematef111@gmail.com |
 
-**Course:** Data Structures & Algorithms — Faculty of Engineering, Computer Science Department  
+**Course:** Foundation of Software Development — Digilinas initiative, AI-based software development Program
 **Academic Year:** 2025 / 2026
