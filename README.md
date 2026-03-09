@@ -229,5 +229,5 @@ Each equation string is split at `=` into a left-hand side and a right-hand side
 | Shrouk Mohamed Sayed | shrouk26529@gmail.com |
 | Hanem Atef Elsayed | hanematef111@gmail.com |
 
-**Course:** Data Structures & Algorithms — Faculty of Engineering, Computer Science Department  
+**Course:** Foundations of Software Development — Digilians initiative,  AI-based software development Program
 **Academic Year:** 2025 / 2026
