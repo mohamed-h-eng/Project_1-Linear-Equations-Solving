@@ -1,3 +1,4 @@
+https://teams.microsoft.com/meet/35302879038654?p=Uwz153EO0myiN74rzn
 # Linear Equations Solver
 
 A C++ program that solves a system of **n linear equations** with **n unknowns** using **Gaussian Elimination**. After reading the equations, the program enters an interactive command loop until `exit` is entered.
